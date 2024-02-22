@@ -1,0 +1,18 @@
+997. Find the Town Judge
+
+
+class Solution {
+    public int findJudge(int N, int[][] trust) {
+        int[] trustCounts = new int[N + 1];
+        for (int[] t : trust) {
+            trustCounts[t[0]]--; // Outgoing trust decrement
+            trustCounts[t[1]]++; // Incoming trust increment
+        }
+        for (int i = 1; i <= N; i++) {
+            if (trustCounts[i] == N - 1) { // The town judge trusts nobody and everyone trusts the town judge
+                return i;
+            }
+        }
+        return -1;
+    }
+}
