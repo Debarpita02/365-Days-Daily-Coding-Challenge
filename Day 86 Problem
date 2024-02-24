@@ -1,0 +1,44 @@
+2092. Find All People With Secret
+
+
+import java.util.*;
+
+class Solution {
+    public List<Integer> findAllPeople(int n, int[][] meetings, int firstPerson) {
+        List<Integer> ans = new ArrayList<>();
+        List<int[]>[] adj = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        
+        for (int[] x : meetings) {
+            int p1 = x[0], p2 = x[1], tm = x[2];
+            adj[p1].add(new int[]{p2, tm});
+            adj[p2].add(new int[]{p1, tm});
+        }
+        
+        int[] knowing = new int[n];
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0])); // [T, P]
+        
+        pq.offer(new int[]{0, 0}); // Time 0 for person 0
+        pq.offer(new int[]{0, firstPerson}); // Time 0 for the given first person
+        while (!pq.isEmpty()) {
+            int[] T = pq.poll();
+            int currT = T[0], currP = T[1];
+            
+            if (knowing[currP] == 1) continue;
+            knowing[currP] = 1;
+            for (int[] x : adj[currP]) {
+                int p = x[0], tm = x[1];
+                if (tm >= currT && knowing[p] == 0) {
+                    pq.offer(new int[]{tm, p});
+                }
+            }
+        }
+        
+        for (int i = 0; i < n; i++) {
+            if (knowing[i] == 1) ans.add(i);
+        }
+        return ans;
+    }
+}
