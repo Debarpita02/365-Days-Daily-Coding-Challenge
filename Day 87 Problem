@@ -1,0 +1,81 @@
+2709. Greatest Common Divisor Traversal
+
+
+import java.util.*;
+
+class UnionFind {
+    private int[] roots;
+    private int[] ranks;
+    private int components;
+
+    public UnionFind(int n) {
+        roots = new int[n];
+        ranks = new int[n];
+        components = n;
+        for (int i = 0; i < n; i++) {
+            roots[i] = i;
+            ranks[i] = 1;
+        }
+    }
+
+    public int find(int x) {
+        if (roots[x] != x) {
+            roots[x] = find(roots[x]);
+        }
+        return roots[x];
+    }
+
+    public boolean union(int x, int y) {
+        int X = find(x);
+        int Y = find(y);
+        if (X == Y) return false;
+        if (ranks[X] < ranks[Y]) {
+            roots[X] = Y;
+        } else if (ranks[Y] < ranks[X]) {
+            roots[Y] = X;
+        } else {
+            roots[X] = Y;
+            ranks[Y]++;
+        }
+        components--;
+        return true;
+    }
+
+    public int getComponents() {
+        return components;
+    }
+}
+
+class Solution {
+    public boolean canTraverseAllPairs(int[] nums) {
+        int MAX_NUM = Arrays.stream(nums).max().orElse(0);
+        int[] sieve = new int[MAX_NUM + 1];
+        for (int i = 2; i < sieve.length; i++) {
+            if (sieve[i] != 0) continue;
+            for (int j = i + i; j <= MAX_NUM; j += i) {
+                if (sieve[j] == 0) {
+                    sieve[j] = i;
+                }
+            }
+        }
+
+        UnionFind uf = new UnionFind(nums.length);
+        Map<Integer, List<Integer>> primes = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int v = nums[i];
+            while (v != 1) {
+                int factor = sieve[v] != 0 ? sieve[v] : v;
+                primes.computeIfAbsent(factor, k -> new ArrayList<>()).add(i);
+                while (v % factor == 0) {
+                    v /= factor;
+                }
+            }
+        }
+        for (List<Integer> val : primes.values()) {
+            for (int i = 0; i < val.size() - 1; i++) {
+                uf.union(val.get(i), val.get(i + 1));
+            }
+        }
+        return uf.getComponents() == 1;
+    }
+}
