@@ -1,0 +1,21 @@
+100. Same Tree
+
+
+// Definition for a binary tree node.
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int x) { val = x; }
+}
+
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true; // Both trees are empty, hence equal
+        if (p == null || q == null) return false; // One of the trees is empty, hence not equal
+        if (p.val != q.val) return false; // Values at current nodes are different
+        
+        // Recursively check left and right subtrees
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+}
