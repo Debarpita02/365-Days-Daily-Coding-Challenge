@@ -1,0 +1,28 @@
+948. Bag of Tokens
+
+
+import java.util.Arrays;
+
+class Solution {
+    public int bagOfTokensScore(int[] tokens, int P) {
+        Arrays.sort(tokens);
+        int maxScore = 0;
+        int currentScore = 0;
+        int i = 0, j = tokens.length - 1;
+        
+        while (i <= j) {
+            if (P >= tokens[i]) {
+                P -= tokens[i++];
+                currentScore++;
+                maxScore = Math.max(maxScore, currentScore);
+            } else if (currentScore > 0) {
+                P += tokens[j--];
+                currentScore--;
+            } else {
+                break;
+            }
+        }
+        
+        return maxScore;
+    }
+}
