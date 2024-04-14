@@ -1,0 +1,15 @@
+404. Sum of Left Leaves
+
+
+class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+        if (root == null) return 0;
+        return sumOfLeftLeavesHelper(root, false);
+    }
+    
+    private int sumOfLeftLeavesHelper(TreeNode node, boolean isLeft) {
+        if (node == null) return 0;
+        if (isLeft && node.left == null && node.right == null) return node.val;
+        return sumOfLeftLeavesHelper(node.left, true) + sumOfLeftLeavesHelper(node.right, false);
+    }
+}
